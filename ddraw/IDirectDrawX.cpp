@@ -2194,11 +2194,16 @@ HRESULT m_IDirectDrawX::SetDisplayMode(DWORD dwWidth, DWORD dwHeight, DWORD dwBP
 			DWORD FoundWidth = dwWidth;
 			DWORD FoundHeight = dwHeight;
 
-			// Check resolution
-			HRESULT hr = CheckFixResolution(dwWidth, dwHeight, FoundWidth, FoundHeight);
-			if (FAILED(hr))
+			// Check resolution only when fullscreen mode requires it
+			if ((IsExclusiveMode() && !Config.EnableWindowMode) ||
+				Config.FullscreenWindowMode ||
+				Config.ForceExclusiveFullscreen)
 			{
-				return hr;
+				HRESULT hr = CheckFixResolution(dwWidth, dwHeight, FoundWidth, FoundHeight);
+				if (FAILED(hr))
+				{
+					return hr;
+				}
 			}
 
 			DisplayMode.Width = dwWidth;
